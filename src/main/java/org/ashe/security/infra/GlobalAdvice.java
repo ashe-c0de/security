@@ -40,7 +40,7 @@ public class GlobalAdvice {
         // 记录日志
         // 通知运维
         // 通知开发
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("夫人，你也不想输错密码吧?");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("奥さん、あなたもパスワードを間違えたくないでしょう");
     }
 
 }

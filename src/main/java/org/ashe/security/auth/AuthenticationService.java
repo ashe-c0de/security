@@ -26,7 +26,7 @@ public class AuthenticationService {
     public AuthenticationResponse register(RegisterRequest request) {
         Optional<User> optionalUser = repository.findByEmail(request.getEmail());
         if (optionalUser.isPresent()) {
-            throw new ServiceException("User already exists!");
+            throw new ServiceException(String.format("this email %s has been registered", request.getEmail()));
         }
         var user = User.builder()
                 .email(request.getEmail())
