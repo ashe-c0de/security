@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -35,12 +36,15 @@ public class GlobalAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
-    @ExceptionHandler(value = BadCredentialsException.class)
+    /**
+     * email not found or password not match
+     */
+    @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class})
     public ResponseEntity<String> catchException() {
         // 记录日志
         // 通知运维
         // 通知开发
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("奥さん、あなたもパスワードを間違えたくないでしょう");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("email or password is wrong!");
     }
 
 }

@@ -7,10 +7,15 @@ import org.ashe.security.auth.RegisterRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.CollectionUtils;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @SpringBootTest
 @Slf4j
-public class FunnyTest {
+class FunnyTest {
 
     @Resource
     private ObjectMapper objectMapper;
@@ -26,5 +31,23 @@ public class FunnyTest {
                     .build());
             log.info(jsonStr);
         });
+    }
+
+    @Test
+    void collection(){
+        Assertions.assertDoesNotThrow(() -> {
+            List<String> duplicateElements = getDuplicateElements(List.of("111", "222", "333"));
+            log.info("duplicateElements: {}", duplicateElements);
+        });
+    }
+
+    public List<String> getDuplicateElements(List<String> list) {
+        if (CollectionUtils.isEmpty(list)) {
+            return List.of();
+        }
+        Set<String> set = new HashSet<>();
+        return list.stream()
+                .filter(e -> !set.add(e))
+                .toList();
     }
 }
