@@ -19,6 +19,11 @@ public class BeanConf {
 
     private final UserRepository userRepository;
 
+    /**
+     * 1.实现了UserDetailsService接口的loadUserByUsername方法
+     * 2.返回并注入了UserDetailsService实例
+     * 该实例是通过Spring容器自动配置来进行注入的，由于Lambda表达式是一个匿名的、临时的实现，因此无法直接确定它的具体类名
+     */
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> userRepository.findByEmail(username)

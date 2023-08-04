@@ -21,7 +21,7 @@ class FunnyTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void funny(){
+    void funny() {
         Assertions.assertDoesNotThrow(() -> {
             String jsonStr = objectMapper.writeValueAsString(RegisterRequest.builder()
                     .email("ashet@qq.com")
@@ -34,7 +34,7 @@ class FunnyTest {
     }
 
     @Test
-    void collection(){
+    void collection() {
         Assertions.assertDoesNotThrow(() -> {
             List<String> duplicateElements = getDuplicateElements(List.of("111", "222", "333"));
             log.info("duplicateElements: {}", duplicateElements);
@@ -49,5 +49,14 @@ class FunnyTest {
         return list.stream()
                 .filter(e -> !set.add(e))
                 .toList();
+    }
+
+    @Test
+    void identity() {
+        Assertions.assertDoesNotThrow(() -> {
+            String identity = "513023199802215336";
+            String formatIdentity = identity.replaceAll("(\\d{4})\\d{10}(\\w{4})", "$1*****$2");
+            log.info(formatIdentity);
+        });
     }
 }
