@@ -27,6 +27,15 @@ public class GlobalAdvice {
         log.error(String.format("======== %s ========", e.getClass().toString()), e);
         return ResponseEntity.status(521).body(e.getMessage());
     }
+    @ExceptionHandler(value = EmergencyException.class)
+    public ResponseEntity<String> catchException(EmergencyException e) {
+        // 记录日志
+        log.error(e.getTitle(), e);
+        // 通知运维
+        // 通知开发
+        ExceptionAlarm.noticeDeveloper(e.getMessage(), e.getDeveloper(), e.getTitle());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("系统异常，已通知开发人员");
+    }
 
     @ExceptionHandler(value = IllegalArgumentException.class)
     public ResponseEntity<String> catchException(IllegalArgumentException e) {

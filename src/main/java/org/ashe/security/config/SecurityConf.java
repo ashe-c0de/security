@@ -18,13 +18,17 @@ public class SecurityConf {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final String[] authorizedUrl = {
+            "/api/v1/auth/**",
+            "/api/v1/test/**"
+    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                        .requestMatchers("/api/v1/auth/**")
+                        .requestMatchers(authorizedUrl)
                         .permitAll()
                         .anyRequest()
                         .authenticated())
