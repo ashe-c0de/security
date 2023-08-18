@@ -1,4 +1,11 @@
 spring:
+  application:
+    name: SECURITY
+  config:
+    activate:
+      on-profile: dev
+  banner:
+    location: banner/dev.txt
   datasource:
     url: jdbc:postgresql://localhost:5432/test
     username: postgres
@@ -11,3 +18,25 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+
+
+---
+spring:
+  application:
+    name: SECURITY
+  config:
+    activate:
+      on-profile: test
+  banner:
+    location: banner/test.txt
+
+---
+spring:
+  application:
+    name: SECURITY
+  config:
+    activate:
+      on-profile: prod
+  banner:
+    location: banner/prod.txt

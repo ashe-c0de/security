@@ -1,5 +1,6 @@
 package org.ashe.security.infra;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @RestControllerAdvice
 @Slf4j
+@RequiredArgsConstructor
 public class GlobalAdvice {
+
+    private final EnvironmentUtils environmentUtils;
 
     /**
      * we only need catch ServiceException and wrap it to json for view
@@ -27,13 +31,16 @@ public class GlobalAdvice {
         log.error(String.format("======== %s ========", e.getClass().toString()), e);
         return ResponseEntity.status(521).body(e.getMessage());
     }
+
     @ExceptionHandler(value = EmergencyException.class)
     public ResponseEntity<String> catchException(EmergencyException e) {
         // 记录日志
         log.error(e.getTitle(), e);
         // 通知运维
         // 通知开发
-        ExceptionAlarm.noticeDeveloper(e.getMessage(), e.getDeveloper(), e.getTitle());
+        if (environmentUtils.isDev()) {
+            ExceptionAlarm.noticeDeveloper(e.getMessage(), e.getDeveloper(), e.getTitle());
+        }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("系统异常，已通知开发人员");
     }
 
