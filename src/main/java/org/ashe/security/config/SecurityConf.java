@@ -20,7 +20,8 @@ public class SecurityConf {
     private final AuthenticationProvider authenticationProvider;
     private final String[] authorizedUrl = {
             "/api/v1/auth/**",
-            "/api/v1/test/**"
+            "/api/v1/test/**",
+            "/code.html"
     };
 
     @Bean

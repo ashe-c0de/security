@@ -30,6 +30,18 @@ spring:
       on-profile: test
   banner:
     location: banner/test.txt
+  datasource:
+    url: jdbc:postgresql://localhost:5432/test
+    username: postgres
+    password: '!ashe4321.'
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 ---
 spring:
@@ -40,3 +52,15 @@ spring:
       on-profile: prod
   banner:
     location: banner/prod.txt
+  datasource:
+    url: jdbc:postgresql://localhost:5432/test
+    username: postgres
+    password: '!ashe4321.'
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect

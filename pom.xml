@@ -58,7 +58,7 @@
 			<version>0.11.5</version>
 		</dependency>
 
-		<!-- dingtalk -->
+		<!-- for Ding robot -->
 		<dependency>
 			<groupId>com.aliyun</groupId>
 			<artifactId>alibaba-dingtalk-service-sdk</artifactId>
@@ -70,7 +70,12 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
+		<!-- for Ding login -->
+		<dependency>
+			<groupId>com.aliyun</groupId>
+			<artifactId>dingtalk</artifactId>
+			<version>1.1.86</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

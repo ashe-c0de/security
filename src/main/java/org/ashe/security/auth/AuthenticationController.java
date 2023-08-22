@@ -20,4 +20,14 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticateRequest request){
         return ResponseEntity.ok(service.authenticate(request));
     }
+
+    /**
+     * <a href="http://127.0.0.1:8080/code.html">Ding login</a>
+     */
+    @GetMapping("/ding")
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestParam(value = "authCode") String authCode){
+        return ResponseEntity.ok(service.authenticate(authCode));
+    }
+
+
 }
