@@ -8,6 +8,7 @@ import com.aliyun.dingtalkoauth2_1_0.models.GetUserTokenResponse;
 import com.aliyun.teaopenapi.models.Config;
 import com.aliyun.teautil.models.RuntimeOptions;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ashe.security.config.JwtService;
 import org.ashe.security.infra.ServiceException;
 import org.ashe.security.user.Role;
@@ -24,12 +25,17 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
 
     private final UserRepository repository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+
+    final String fbi = "FBI";
+    final String https = "https";
+    final String central = "central";
 
     public AuthenticationResponse register(RegisterRequest request) {
         Optional<User> optionalUser = repository.findByMobile(request.getEmail());
@@ -61,7 +67,7 @@ public class AuthenticationService {
                 )
         );
         var user = repository.findByMobile(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(() -> new UsernameNotFoundException(fbi));
         // 授权
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
@@ -72,8 +78,9 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(String authCode) {
         // 钉钉扫码鉴权
         String mobile = getMobile(authCode);
+        log.info(mobile);
         var user = repository.findByMobile(mobile)
-                .orElseThrow();
+                .orElseThrow(() -> new UsernameNotFoundException(fbi));
         // 授权
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
@@ -84,31 +91,33 @@ public class AuthenticationService {
     private String getMobile(String authCode) {
         try {
             Config config = new Config();
-            config.protocol = "https";
-            config.regionId = "central";
+            config.protocol = https;
+            config.regionId = central;
             Client client = new Client(config);
             GetUserTokenRequest getUserTokenRequest = new GetUserTokenRequest()
 
                     // 应用基础信息-应用信息的AppKey,请务必替换为开发的应用AppKey
-                    .setClientId("dingrbbhg7plnul8namp")
+                    .setClientId("xxxx")
 
                     // 应用基础信息-应用信息的AppSecret，,请务必替换为开发的应用AppSecret
-                    .setClientSecret("4ReGK6uU8tZ1TZwQEOai5lXTLpZDeN2BJ-Wi6yJxNylxdJ4paTjfPjxnBEhI5SDE")
+                    .setClientSecret("xxxx")
+
                     .setCode(authCode)
+
                     .setGrantType("authorization_code");
             GetUserTokenResponse getUserTokenResponse = client.getUserToken(getUserTokenRequest);
             // 获取用户个人token
             String accessToken = getUserTokenResponse.getBody().getAccessToken();
             Config config1 = new Config();
-            config1.protocol = "https";
-            config1.regionId = "central";
+            config1.protocol = https;
+            config1.regionId = central;
             com.aliyun.dingtalkcontact_1_0.Client client1 = new com.aliyun.dingtalkcontact_1_0.Client(config1);
             GetUserHeaders getUserHeaders = new GetUserHeaders();
             getUserHeaders.xAcsDingtalkAccessToken = accessToken;
             GetUserResponse userResponse = client1.getUserWithOptions("me", getUserHeaders, new RuntimeOptions());
             return userResponse.getBody().getMobile();
         } catch (Exception e) {
-            throw new UsernameNotFoundException("FBI");
+            throw new UsernameNotFoundException(fbi);
         }
     }
 }
