@@ -53,14 +53,14 @@ public class GlobalAdvice {
     }
 
     /**
-     * email not found or password not match
+     * mobile not found or password not match
      */
     @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class})
     public ResponseEntity<String> catchException() {
         // 记录日志
         // 通知运维
         // 通知开发
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("email or password is wrong!");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("mobile or password is wrong!");
     }
 
 }

@@ -78,9 +78,9 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(String authCode) {
         // 钉钉扫码鉴权
         String mobile = getMobile(authCode);
-        log.info(mobile);
+        log.info("mobile --> {}", mobile);
         var user = repository.findByMobile(mobile)
-                .orElseThrow(() -> new UsernameNotFoundException(fbi));
+                .orElseThrow(() -> new ServiceException("register first please"));
         // 授权
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()

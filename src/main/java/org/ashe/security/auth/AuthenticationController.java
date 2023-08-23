@@ -23,6 +23,7 @@ public class AuthenticationController {
 
     /**
      * <a href="http://127.0.0.1:8080/code.html">Ding login</a>
+     * <a href="https://open.dingtalk.com/document/orgapp/tutorial-obtaining-user-personal-information#title-ts9-exq-xrh">reference</a>
      */
     @GetMapping("/ding")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestParam(value = "authCode") String authCode){
