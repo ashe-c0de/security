@@ -33,9 +33,9 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-    final String fbi = "FBI";
-    final String https = "https";
-    final String central = "central";
+    private static final String FBI = "FBI";
+    private static final String HTTPS = "https";
+    private static final String CENTRAL = "central";
 
     public AuthenticationResponse register(RegisterRequest request) {
         Optional<User> optionalUser = repository.findByMobile(request.getEmail());
@@ -67,7 +67,7 @@ public class AuthenticationService {
                 )
         );
         var user = repository.findByMobile(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException(fbi));
+                .orElseThrow(() -> new UsernameNotFoundException(FBI));
         // 授权
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
@@ -91,8 +91,8 @@ public class AuthenticationService {
     private String getMobile(String authCode) {
         try {
             Config config = new Config();
-            config.protocol = https;
-            config.regionId = central;
+            config.protocol = HTTPS;
+            config.regionId = CENTRAL;
             Client client = new Client(config);
             GetUserTokenRequest getUserTokenRequest = new GetUserTokenRequest()
 
@@ -109,15 +109,15 @@ public class AuthenticationService {
             // 获取用户个人token
             String accessToken = getUserTokenResponse.getBody().getAccessToken();
             Config config1 = new Config();
-            config1.protocol = https;
-            config1.regionId = central;
+            config1.protocol = HTTPS;
+            config1.regionId = CENTRAL;
             com.aliyun.dingtalkcontact_1_0.Client client1 = new com.aliyun.dingtalkcontact_1_0.Client(config1);
             GetUserHeaders getUserHeaders = new GetUserHeaders();
             getUserHeaders.xAcsDingtalkAccessToken = accessToken;
             GetUserResponse userResponse = client1.getUserWithOptions("me", getUserHeaders, new RuntimeOptions());
             return userResponse.getBody().getMobile();
         } catch (Exception e) {
-            throw new UsernameNotFoundException(fbi);
+            throw new UsernameNotFoundException(FBI);
         }
     }
 }
