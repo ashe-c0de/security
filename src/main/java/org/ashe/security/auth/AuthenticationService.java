@@ -14,6 +14,7 @@ import org.ashe.security.infra.ServiceException;
 import org.ashe.security.user.Role;
 import org.ashe.security.user.User;
 import org.ashe.security.user.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,17 +34,21 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
+    @Value("${ding-talk.app-key}")
+    private String appKey;
+    @Value("${ding-talk.app-secret}")
+    private String appSecret;
     private static final String FBI = "FBI";
     private static final String HTTPS = "https";
     private static final String CENTRAL = "central";
 
     public AuthenticationResponse register(RegisterRequest request) {
-        Optional<User> optionalUser = repository.findByMobile(request.getEmail());
+        Optional<User> optionalUser = repository.findByMobile(request.getMobile());
         if (optionalUser.isPresent()) {
-            throw new ServiceException(String.format("this email %s has been registered", request.getEmail()));
+            throw new ServiceException(String.format("this mobile %s has been registered", request.getMobile()));
         }
         var user = User.builder()
-                .mobile(request.getEmail())
+                .mobile(request.getMobile())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -62,11 +67,11 @@ public class AuthenticationService {
         // 鉴权
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        request.getMobile(),
                         request.getPassword()
                 )
         );
-        var user = repository.findByMobile(request.getEmail())
+        var user = repository.findByMobile(request.getMobile())
                 .orElseThrow(() -> new UsernameNotFoundException(FBI));
         // 授权
         var jwtToken = jwtService.generateToken(user);
@@ -97,10 +102,10 @@ public class AuthenticationService {
             GetUserTokenRequest getUserTokenRequest = new GetUserTokenRequest()
 
                     // 应用基础信息-应用信息的AppKey,请务必替换为开发的应用AppKey
-                    .setClientId("xxxx")
+                    .setClientId(appKey)
 
                     // 应用基础信息-应用信息的AppSecret，,请务必替换为开发的应用AppSecret
-                    .setClientSecret("xxxx")
+                    .setClientSecret(appSecret)
 
                     .setCode(authCode)
 

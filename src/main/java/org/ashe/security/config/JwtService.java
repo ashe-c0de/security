@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,8 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "6D5970337336763979244226452948404D635166546A576E5A7234743777217A";
+    @Value("${oauth2.secret-key}")
+    private String secretKey;
 
     public String generateToken(UserDetails userDetails) {
         return generateToken(Map.of(), userDetails);
@@ -38,8 +40,8 @@ public class JwtService {
     }
 
     public Boolean isTokenValid(String token, UserDetails userDetails) {
-        final String email = extractUserEmail(token);
-        return email.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        final String mobile = extractUserMobile(token);
+        return mobile.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
@@ -50,7 +52,7 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public String extractUserEmail(String token) {
+    public String extractUserMobile(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -69,6 +71,6 @@ public class JwtService {
     }
 
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 }
