@@ -38,7 +38,7 @@ spring:
   banner:
     location: banner/test.txt
   datasource:
-    url: jdbc:postgresql://localhost:5432/test
+    url: jdbc:postgresql://192.168.2.157:5432/test
     username: postgres
     password: '!ashe4321.'
     driver-class-name: org.postgresql.Driver
@@ -50,6 +50,13 @@ spring:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+ding-talk:
+  app-key: xxx
+  app-secret: xxx
+
+# 颁发jwtToken的私钥
+oauth2:
+  secret-key: 6D5970337336763979244226452948404D635166546A576E5A7234743777217A
 ---
 spring:
   application:
@@ -60,7 +67,7 @@ spring:
   banner:
     location: banner/prod.txt
   datasource:
-    url: jdbc:postgresql://localhost:5432/test
+    url: jdbc:postgresql://192.168.2.157:5432/test
     username: postgres
     password: '!ashe4321.'
     driver-class-name: org.postgresql.Driver
@@ -71,3 +78,11 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+ding-talk:
+  app-key: xxx
+  app-secret: xxx
+
+# 颁发jwtToken的私钥
+oauth2:
+  secret-key: 6D5970337336763979244226452948404D635166546A576E5A7234743777217A

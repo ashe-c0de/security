@@ -24,7 +24,7 @@ class FunnyTest {
     void funny() {
         Assertions.assertDoesNotThrow(() -> {
             String jsonStr = objectMapper.writeValueAsString(RegisterRequest.builder()
-                    .email("ashet@qq.com")
+                    .mobile("ashet@qq.com")
                     .password("1234")
                     .firstname("Ashe")
                     .lastname("Red")
