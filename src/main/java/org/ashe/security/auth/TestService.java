@@ -1,13 +1,18 @@
 package org.ashe.security.auth;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ashe.security.config.MqConf;
 import org.ashe.security.infra.EmergencyException;
+import org.ashe.security.mq.MqProducer;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class TestService {
 
+    private final MqProducer mqProducer;
 
     public void dingTalk() {
         try {
@@ -20,4 +25,7 @@ public class TestService {
         }
     }
 
+    public void mq() {
+        mqProducer.sendMessage(MqConf.HELLO_KEY, "hey RabbitMQ");
+    }
 }

@@ -16,4 +16,9 @@ public class TestController {
     public void dingTalk() {
         testService.dingTalk();
     }
+
+    @GetMapping("/mq")
+    public void mq() {
+        testService.mq();
+    }
 }
