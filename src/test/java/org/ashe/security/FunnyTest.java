@@ -9,10 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+/**
+ * spring.profiles.active=dev
+ */
 @SpringBootTest
 @Slf4j
 class FunnyTest {
@@ -41,6 +42,20 @@ class FunnyTest {
         });
     }
 
+    @Test
+    void hashMap() {
+        Assertions.assertDoesNotThrow(() -> {
+            Map<String, Object> hashMap = new HashMap<>();
+            for (int i = 0; i < 10; i++) {
+                hashMap.put(String.valueOf(i), String.valueOf(i));
+            }
+            for (Map.Entry<String, Object> entry : hashMap.entrySet()) {
+                log.info("key : {}", entry.getKey());
+                log.info("value : {}", entry.getValue().toString());
+            }
+        });
+    }
+
     public List<String> getDuplicateElements(List<String> list) {
         if (CollectionUtils.isEmpty(list)) {
             return List.of();
@@ -59,4 +74,5 @@ class FunnyTest {
             log.info(formatIdentity);
         });
     }
+
 }

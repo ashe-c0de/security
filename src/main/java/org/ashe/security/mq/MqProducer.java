@@ -27,7 +27,6 @@ public class MqProducer {
                 log.error("----> Failed to send message: " + cause);
             }
         });
-        rabbitTemplate.setMandatory(true);
     }
 
 
