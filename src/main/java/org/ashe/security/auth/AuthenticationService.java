@@ -10,6 +10,7 @@ import com.aliyun.teautil.models.RuntimeOptions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ashe.security.config.JwtService;
+import org.ashe.security.infra.RsaEncryptor2;
 import org.ashe.security.infra.ServiceException;
 import org.ashe.security.user.Role;
 import org.ashe.security.user.User;
@@ -30,6 +31,7 @@ public class AuthenticationService {
     private final UserRepository repository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final RsaEncryptor2 rsaEncryptor2;
 
     @Value("${ding-talk.app-key}")
     private String appKey;
@@ -74,9 +76,9 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(String authCode) {
         // 钉钉扫码鉴权
         String mobile = getMobile(authCode);
-        log.info("mobile --> {}", mobile);
         var user = repository.findByMobile(mobile)
                 .orElseThrow(() -> new ServiceException("register first please"));
+        log.info("mobile --> {}", mobile);
         // 授权
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
@@ -93,10 +95,10 @@ public class AuthenticationService {
             GetUserTokenRequest getUserTokenRequest = new GetUserTokenRequest()
 
                     // 应用基础信息-应用信息的AppKey,请务必替换为开发的应用AppKey
-                    .setClientId(appKey)
+                    .setClientId(rsaEncryptor2.decrypt(appKey))
 
                     // 应用基础信息-应用信息的AppSecret，,请务必替换为开发的应用AppSecret
-                    .setClientSecret(appSecret)
+                    .setClientSecret(rsaEncryptor2.decrypt(appSecret))
 
                     .setCode(authCode)
 
