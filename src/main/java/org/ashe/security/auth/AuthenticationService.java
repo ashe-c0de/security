@@ -10,18 +10,24 @@ import com.aliyun.teautil.models.RuntimeOptions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ashe.security.config.JwtService;
+import org.ashe.security.domain.RedisKey;
 import org.ashe.security.infra.ConfValue;
 import org.ashe.security.infra.RsaEncryptor2;
 import org.ashe.security.infra.ServiceException;
 import org.ashe.security.user.Role;
 import org.ashe.security.user.User;
 import org.ashe.security.user.UserRepository;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +39,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final RsaEncryptor2 rsaEncryptor2;
     private final ConfValue confValue;
+    private final StringRedisTemplate stringRedisTemplate;
 
     private static final String FBI = "FBI";
     private static final String HTTPS = "https";
@@ -70,7 +77,7 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse authenticate(String authCode) {
+    public AuthenticationResponse ding(String authCode) {
         // 钉钉扫码鉴权
         String mobile = getMobile(authCode);
         var user = repository.findByMobile(mobile)
@@ -114,5 +121,39 @@ public class AuthenticationService {
         } catch (Exception e) {
             throw new UsernameNotFoundException(FBI);
         }
+    }
+
+    public AuthenticationResponse verifyCode(String verifyCode) {
+        // 根据验证码获取Redis上缓存的mobile
+        String mobile = stringRedisTemplate.opsForValue().get(RedisKey.getKey(RedisKey.SMS_VERIFY_CODE, verifyCode));
+        Assert.state(!Objects.isNull(mobile), "verifyCode is wrong, check it please");
+        // 查找用户或自动注册
+        User user = repository.findByMobile(mobile)
+                .orElseGet(() -> {
+                    User newUser = User.builder()
+                            .mobile(mobile)
+                            .password(passwordEncoder.encode("1234"))
+                            .role(Role.USER)
+                            .createTime(new Date())
+                            .updateTime(new Date())
+                            .build();
+                    return repository.save(newUser);
+                });
+
+        // 生成 JWT 令牌
+        String jwtToken = jwtService.generateToken(user);
+
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+
+    public void sendCode(String mobile) {
+        // 验证码------6位UUID随机数字
+        String str = Integer.toString(UUID.randomUUID().hashCode());
+        String verifyCode = str.substring(str.length() - 6);
+        log.info("verifyCode ----> {}", verifyCode);
+        String key = RedisKey.getKey(RedisKey.SMS_VERIFY_CODE, verifyCode);
+        stringRedisTemplate.opsForValue().set(key, mobile, 5, TimeUnit.MINUTES);
     }
 }

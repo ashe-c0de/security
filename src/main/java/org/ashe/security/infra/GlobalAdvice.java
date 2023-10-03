@@ -23,7 +23,7 @@ public class GlobalAdvice {
     /**
      * we only need catch ServiceException and wrap it to json for view
      */
-    @ExceptionHandler(value = ServiceException.class)
+    @ExceptionHandler({IllegalStateException.class, ServiceException.class})
     public ResponseEntity<String> catchException(ServiceException e) {
         // 记录日志
         // 通知运维
