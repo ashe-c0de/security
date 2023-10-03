@@ -27,12 +27,15 @@ public class MqConf {
      */
     @Bean
     public Queue helloQueue() {
-        return QueueBuilder.durable(HELLO_QUEUE).build();
+        return QueueBuilder
+                .durable(HELLO_QUEUE)
+                .build();
     }
 
     @Bean
     public DirectExchange directExchange(){
-        return ExchangeBuilder.directExchange(DIRECT_EXCHANGE)
+        return ExchangeBuilder
+                .directExchange(DIRECT_EXCHANGE)
                 .durable(true)
                 .build();
     }

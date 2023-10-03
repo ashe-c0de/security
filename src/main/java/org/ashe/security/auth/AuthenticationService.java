@@ -15,8 +15,6 @@ import org.ashe.security.user.Role;
 import org.ashe.security.user.User;
 import org.ashe.security.user.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,7 +30,6 @@ public class AuthenticationService {
     private final UserRepository repository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
 
     @Value("${ding-talk.app-key}")
     private String appKey;
@@ -65,12 +62,6 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticateRequest request) {
         // 鉴权
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getMobile(),
-                        request.getPassword()
-                )
-        );
         var user = repository.findByMobile(request.getMobile())
                 .orElseThrow(() -> new UsernameNotFoundException(FBI));
         // 授权
