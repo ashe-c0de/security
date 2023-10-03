@@ -5,9 +5,9 @@ public class RedisKey {
     private RedisKey(){}
 
     /**
-     * 项目名+业务名+业务值
+     * 项目名
      */
-    private static final String ORIGIN_KEY = "security";
+    private static final String PROJECT = "security";
     /**
      * 短信验证码
      */
@@ -20,6 +20,7 @@ public class RedisKey {
 
     /**
      * 获取redis_key
+     * 格式 --> 项目名:业务名:业务值
      * @param business      业务名
      * @param value         业务值
      */
@@ -28,7 +29,7 @@ public class RedisKey {
         if ("0:0:0:0:0:0:0:1".equals(value)) {
             value = "localhost";
         }
-        return String.format("%s:%s:%s", ORIGIN_KEY, business, value);
+        return String.format("%s:%s:%s", PROJECT, business, value);
     }
 
 }
