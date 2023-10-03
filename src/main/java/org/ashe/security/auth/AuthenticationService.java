@@ -135,7 +135,7 @@ public class AuthenticationService {
     public AuthenticationResponse verifyCode(String verifyCode) {
         // 验证码鉴权
         String mobile = stringRedisTemplate.opsForValue().get(RedisKey.getKey(RedisKey.SMS_VERIFY_CODE, verifyCode));
-        Assert.state(!Objects.isNull(mobile), "verifyCode is wrong, check it please");
+        Assert.isTrue(!Objects.isNull(mobile), "verifyCode is wrong, check it please");
         // 查找用户或自动注册
         User user = repository.findByMobile(mobile)
                 .orElseGet(() -> {
