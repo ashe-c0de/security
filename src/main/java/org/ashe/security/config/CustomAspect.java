@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.ashe.security.domain.Auth;
 import org.ashe.security.domain.Limit;
 import org.ashe.security.domain.RedisKey;
-import org.ashe.security.infra.ServiceException;
 import org.ashe.security.user.Role;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -47,9 +46,7 @@ public class CustomAspect {
         Assert.notNull(annotation, "Missing @Auth Annotation on target method");
 
         Role requiredRole = annotation.value();
-        if (!requiredRole.name().equals(role)) {
-            throw new ServiceException(String.format("Only %s can request", requiredRole));
-        }
+        Assert.isTrue(requiredRole.name().equals(role), String.format("Only %s can request", requiredRole));
         return joinPoint.proceed();
     }
 
@@ -67,9 +64,7 @@ public class CustomAspect {
         // 获取ipAddress
         String ipAddress = jwtService.getClientIpAddress();
         String key = RedisKey.getKey(RedisKey.REQUEST_COUNT, ipAddress);
-        if (limitIpCallThis(key)) {
-            throw new ServiceException(String.format("发送短信验证码的次数受限，请%s分钟后再试", stringRedisTemplate.getExpire(key, limit.unit())));
-        }
+        Assert.isTrue(limitIpCallThis(key), String.format("发送短信验证码的次数受限，请%s分钟后再试", stringRedisTemplate.getExpire(key, limit.unit())));
         return joinPoint.proceed();
     }
 

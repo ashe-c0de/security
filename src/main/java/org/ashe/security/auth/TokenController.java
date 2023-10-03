@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class TokenController {
 
     @GetMapping("/welcome")
-    public String hello() {
-        return "welcome to HelloController";
+    public String welcome() {
+        return "welcome";
     }
 
     @GetMapping("/admin")
