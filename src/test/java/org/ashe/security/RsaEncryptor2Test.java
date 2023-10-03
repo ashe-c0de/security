@@ -19,7 +19,7 @@ class RsaEncryptor2Test {
     @Test
     void encrypt() {
         Assertions.assertDoesNotThrow(() -> {
-            String encrypt = rsaEncryptor2.encrypt("4ReGK6uU8tZ1TZwQEOai5lXTLpZDeN2BJ-Wi6yJxNylxdJ4paTjfPjxnBEhI5SDE");
+            String encrypt = rsaEncryptor2.encrypt("hell0 world");
             value = encrypt;
             log.info("-----------> " + encrypt);
             String password = rsaEncryptor2.decrypt(value);

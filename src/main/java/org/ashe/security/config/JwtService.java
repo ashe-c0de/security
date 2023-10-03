@@ -6,6 +6,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.ashe.security.infra.ConfValue;
+import org.ashe.security.infra.RsaEncryptor2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import java.util.function.Function;
 public class JwtService {
 
     private final ConfValue confValue;
+    private final RsaEncryptor2 rsaEncryptor2;
 
     public String generateToken(UserDetails userDetails) {
         return generateToken(Map.of(), userDetails);
@@ -72,6 +74,6 @@ public class JwtService {
     }
 
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(confValue.getSecretKey()));
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(rsaEncryptor2.decrypt(confValue.getSecretKey())));
     }
 }

@@ -10,12 +10,12 @@ import com.aliyun.teautil.models.RuntimeOptions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ashe.security.config.JwtService;
+import org.ashe.security.infra.ConfValue;
 import org.ashe.security.infra.RsaEncryptor2;
 import org.ashe.security.infra.ServiceException;
 import org.ashe.security.user.Role;
 import org.ashe.security.user.User;
 import org.ashe.security.user.UserRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,11 +32,8 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final RsaEncryptor2 rsaEncryptor2;
+    private final ConfValue confValue;
 
-    @Value("${ding-talk.app-key}")
-    private String appKey;
-    @Value("${ding-talk.app-secret}")
-    private String appSecret;
     private static final String FBI = "FBI";
     private static final String HTTPS = "https";
     private static final String CENTRAL = "central";
@@ -95,10 +92,10 @@ public class AuthenticationService {
             GetUserTokenRequest getUserTokenRequest = new GetUserTokenRequest()
 
                     // 应用基础信息-应用信息的AppKey,请务必替换为开发的应用AppKey
-                    .setClientId(rsaEncryptor2.decrypt(appKey))
+                    .setClientId(rsaEncryptor2.decrypt(confValue.getAppKey()))
 
                     // 应用基础信息-应用信息的AppSecret，,请务必替换为开发的应用AppSecret
-                    .setClientSecret(rsaEncryptor2.decrypt(appSecret))
+                    .setClientSecret(rsaEncryptor2.decrypt(confValue.getAppSecret()))
 
                     .setCode(authCode)
 
