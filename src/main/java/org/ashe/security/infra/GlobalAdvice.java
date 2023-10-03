@@ -22,9 +22,10 @@ public class GlobalAdvice {
 
     /**
      * we only need catch ServiceException and wrap it to json for view
+     * 为了方便使用断言来抛出业务异常，因此同时捕获了IllegalArgumentException (断言抛出的异常统一为IllegalArgumentException)
      */
-    @ExceptionHandler({IllegalStateException.class, ServiceException.class})
-    public ResponseEntity<String> catchException(ServiceException e) {
+    @ExceptionHandler({ServiceException.class, IllegalArgumentException.class})
+    public ResponseEntity<String> catchServiceException(Exception e) {
         // 记录日志
         // 通知运维
         // 通知开发
@@ -42,14 +43,6 @@ public class GlobalAdvice {
             ExceptionAlarm.noticeDeveloper(e.getMessage(), e.getDeveloper(), e.getTitle());
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("系统异常，已通知开发人员");
-    }
-
-    @ExceptionHandler(value = IllegalArgumentException.class)
-    public ResponseEntity<String> catchException(IllegalArgumentException e) {
-        // 记录日志
-        // 通知运维
-        // 通知开发
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
     /**

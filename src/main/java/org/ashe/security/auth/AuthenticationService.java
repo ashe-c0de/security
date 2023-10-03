@@ -18,6 +18,8 @@ import org.ashe.security.user.Role;
 import org.ashe.security.user.User;
 import org.ashe.security.user.UserRepository;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,7 @@ public class AuthenticationService {
     private final UserRepository repository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
     private final RsaEncryptor2 rsaEncryptor2;
     private final ConfValue confValue;
     private final StringRedisTemplate stringRedisTemplate;
@@ -67,7 +70,13 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticateRequest request) {
-        // 鉴权
+        // 账号密码鉴权
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getMobile(),
+                        request.getPassword()
+                )
+        );
         var user = repository.findByMobile(request.getMobile())
                 .orElseThrow(() -> new UsernameNotFoundException(FBI));
         // 授权
@@ -124,7 +133,7 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse verifyCode(String verifyCode) {
-        // 根据验证码获取Redis上缓存的mobile
+        // 验证码鉴权
         String mobile = stringRedisTemplate.opsForValue().get(RedisKey.getKey(RedisKey.SMS_VERIFY_CODE, verifyCode));
         Assert.state(!Objects.isNull(mobile), "verifyCode is wrong, check it please");
         // 查找用户或自动注册
@@ -142,7 +151,7 @@ public class AuthenticationService {
 
         // 生成 JWT 令牌
         String jwtToken = jwtService.generateToken(user);
-
+        // 授权
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
