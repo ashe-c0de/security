@@ -1,6 +1,5 @@
 package org.ashe.security.mq;
 
-import com.alibaba.fastjson2.JSON;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +30,7 @@ public class MqProducer {
 
 
     public void sendMessage(String routingKey, Object message) {
-        rabbitTemplate.convertAndSend(MqConf.DIRECT_EXCHANGE, routingKey, JSON.toJSON(message));
+        rabbitTemplate.convertAndSend(MqConf.DIRECT_EXCHANGE, routingKey, message);
         log.info("----> Sent message: " + message);
     }
 }
