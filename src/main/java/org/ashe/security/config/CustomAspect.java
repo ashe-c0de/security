@@ -57,19 +57,24 @@ public class CustomAspect {
      */
     @Around("@annotation(org.ashe.security.domain.Limit)")
     public Object limit(ProceedingJoinPoint joinPoint) throws Throwable {
-        // 取出注解实例
+
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
+
+        // 取出注解实例
         Limit limit = method.getAnnotation(Limit.class);
+        Assert.notNull(limit, "Missing @Limit Annotation on target method");
+
         // 获取ipAddress
         String ipAddress = jwtService.getClientIpAddress();
         String key = RedisKey.getKey(RedisKey.REQUEST_COUNT, ipAddress);
+
         Assert.isTrue(limitIpCallThis(key), String.format("发送短信验证码的次数受限，请%s分钟后再试", stringRedisTemplate.getExpire(key, limit.unit())));
         return joinPoint.proceed();
     }
 
     private boolean limitIpCallThis(String key) {
-        // 自增key，初始值为1
+        // key的值进行自增，初始值为1
         Long increment = stringRedisTemplate.opsForValue().increment(key);
         switch (Objects.requireNonNull(increment).intValue()) {
             case 1 ->
