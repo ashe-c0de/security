@@ -64,7 +64,7 @@ public class CustomAspect {
         // 获取ipAddress
         String ipAddress = jwtService.getClientIpAddress();
         String key = RedisKey.getKey(RedisKey.REQUEST_COUNT, ipAddress);
-        Assert.isTrue(!limitIpCallThis(key), String.format("发送短信验证码的次数受限，请%s分钟后再试", stringRedisTemplate.getExpire(key, limit.unit())));
+        Assert.isTrue(limitIpCallThis(key), String.format("发送短信验证码的次数受限，请%s分钟后再试", stringRedisTemplate.getExpire(key, limit.unit())));
         return joinPoint.proceed();
     }
 
@@ -81,7 +81,7 @@ public class CustomAspect {
             default -> {
             }
         }
-        return increment > 5;
+        return increment < 6;
     }
 
 }

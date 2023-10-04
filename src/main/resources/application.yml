@@ -12,6 +12,7 @@ spring:
     password: '!ashe4321.'
     driver-class-name: org.postgresql.Driver
   jpa:
+    open-in-view: false
     show-sql: true
     properties:
       hibernate:
@@ -83,6 +84,7 @@ spring:
     password: '!ashe4321.'
     driver-class-name: org.postgresql.Driver
   jpa:
+    open-in-view: false
     show-sql: true
     properties:
       hibernate:
@@ -153,6 +155,7 @@ spring:
     password: '!ashe4321.'
     driver-class-name: org.postgresql.Driver
   jpa:
+    open-in-view: false
     show-sql: true
     properties:
       hibernate:

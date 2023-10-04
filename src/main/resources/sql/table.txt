@@ -1,0 +1,16 @@
+-- 在PostgreSQL数据库中user是保留关键字，建议不要用作表名/字段名，或以_user/users等代替
+-- 创建user表
+DROP TABLE
+IF
+	EXISTS "_user";
+CREATE TABLE "_user" (
+	"id" SERIAL PRIMARY KEY,
+	"email" VARCHAR ( 20 ),
+	"password" VARCHAR ( 100 ),
+	"firstname" VARCHAR ( 100 ),
+	"lastname" VARCHAR ( 100 ),
+	"role" VARCHAR ( 10 ),
+	"create_time" TIMESTAMP NOT NULL,
+	"update_time" TIMESTAMP NOT NULL
+);
+COMMENT ON TABLE "_user" IS '用户表';

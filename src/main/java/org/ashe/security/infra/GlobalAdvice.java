@@ -48,11 +48,12 @@ public class GlobalAdvice {
     /**
      * mobile not found or password not match
      */
-    @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class})
-    public ResponseEntity<String> catchException() {
+    @ExceptionHandler({BadCredentialsException.class, UsernameNotFoundException.class})
+    public ResponseEntity<String> catchException(Exception e) {
         // 记录日志
         // 通知运维
         // 通知开发
+        log.error(String.format("======== %s ========", e.getClass().toString()), e);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("mobile or password is wrong!");
     }
 

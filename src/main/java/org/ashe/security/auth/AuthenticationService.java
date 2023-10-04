@@ -70,7 +70,7 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticateRequest request) {
-        // 账号密码鉴权
+        // 账号密码验证
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getMobile(),
@@ -87,7 +87,7 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse ding(String authCode) {
-        // 钉钉扫码鉴权
+        // 钉钉扫码
         String mobile = getMobile(authCode);
         var user = repository.findByMobile(mobile)
                 .orElseThrow(() -> new ServiceException("register first please"));
@@ -133,7 +133,7 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse verifyCode(String verifyCode) {
-        // 验证码鉴权
+        // 核对验证码
         String mobile = stringRedisTemplate.opsForValue().get(RedisKey.getKey(RedisKey.SMS_VERIFY_CODE, verifyCode));
         Assert.isTrue(!Objects.isNull(mobile), "verifyCode is expired or wrong");
         // 查找用户或自动注册
