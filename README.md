@@ -1,5 +1,5 @@
 ### 概述
-* 此项目是基于SpringBoot 3.1.2和Spring Security 6的登录应用，实现了JWT（JSON Web Token）身份验证和授权。
+* 此项目是基于Spring Security 3.1.2的登录应用，实现了JWT（JSON Web Token）身份验证和授权。
 * 流程：身份验证 --> 授权(颁发token) --> 鉴权(验证token)
 * 扩展：手机验证码登录 & 钉钉扫码登录
 
