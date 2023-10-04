@@ -1,61 +1,30 @@
-### 概述
+# Security
 * 此项目是基于Spring Security 3.1.2的登录应用，实现了JWT（JSON Web Token）身份验证和授权。
 * 流程：身份验证 --> 授权(颁发token) --> 鉴权(验证token)
 * 扩展：手机验证码登录 & 钉钉扫码登录
 
-### 环境准备
-```
-JDK17
-IDEA
-Maven
-PostgreSQL (建表语句在resources/sql/table.txt)
-RabbitMQ
-Redis
-```
+### Features
+* 注册 & 携带token访问
+* 扩展手机验证码登录 & 钉钉扫码登录
+* 自定义接口请求权限
+* 自定义接口请求频率
+* 钉钉机器人实时报警webhook
 
-### 启动程序
-```
-# 设置dev环境启动
-Active profiles:dev
-```
+### Technologies
+* Spring Boot 3.1.2
+* Spring Security 3.1.2
+* JSON Web Token (JWT)
+* Redis
+* RabbitMQ
 
-###### 1、注册用户
-```
-POST http://localhost:8080/api/v1/auth/register
-Content-Type: application/json
+### Getting Started
+you will need to have the following installed on your local machine:
+* JDK17
+* IDEA
+* PostgreSQL (建表语句在resources/sql/table.txt)
+* RabbitMQ
+* Redis
+* Active profiles:dev (设置dev环境启动)
+* build and run the project
 
-{
-    "mobile": "15283871282",
-    "password": "1234",
-    "firstname": "Ashe",
-    "lastname": "Red"
-}
-```
-
-###### 2、账号登录
-```
-POST http://localhost:8080/api/v1/auth/authenticate
-Content-Type: application/json
-
-{
-    "mobile": "15283871282",
-    "password": "1234"
-}
-```
-
-###### 3、手机验证码登录
-```
-POST http://localhost:8080/api/v1/auth/code/{{verifyCode}}
-```
-
-###### 4、钉钉扫码登录
-```
-http://127.0.0.1:8080/code.html
-```
-
-### 根据令牌访问权限接口
-```
-# 以上4个接口都会返回token，此后携带token访问需要鉴权的接口
-GET http://localhost:8080/api/v1/token/welcome
-Authorization: Bearer {{token}}
-```
+-> The application will be available at http://localhost:8080
