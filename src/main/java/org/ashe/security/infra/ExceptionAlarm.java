@@ -23,7 +23,7 @@ public class ExceptionAlarm {
     public static void noticeDeveloper(String message, String developer, String title) {
         try {
             // 1-初始化API调用Client
-            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/robot/send?access_token=https://oapi.dingtalk.com/robot/send?access_token=c402c2e7fab671b57d6ae81a02aff4b10df812a15e1181f508874485b6b98919");
+            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/robot/send?access_token=7c99c9e8bc7743816f00815df6229e6e9712429b5521f51b521006f19a58baef");
             // 2-初始化请求参数
             OapiRobotSendRequest req = new OapiRobotSendRequest();
             // 2-1 设置消息类型
