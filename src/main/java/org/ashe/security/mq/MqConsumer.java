@@ -18,7 +18,7 @@ public class MqConsumer {
     public void handleMessage(Message message, Channel channel) throws IOException {
         long deliveryTag = message.getMessageProperties().getDeliveryTag();
         try {
-            log.info("----> Received message: " + new String(message.getBody()));
+            log.info("<---- Received message: " + new String(message.getBody()));
             log.info("deliveryTag: {}", deliveryTag);
             // 手动确认签收
             channel.basicAck(deliveryTag, false);
