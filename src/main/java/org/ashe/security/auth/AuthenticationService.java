@@ -133,8 +133,9 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse verifyCode(String verifyCode) {
+        String redisKey = RedisKey.getKey(RedisKey.SMS_VERIFY_CODE, verifyCode);
         // 核对验证码
-        String mobile = stringRedisTemplate.opsForValue().get(RedisKey.getKey(RedisKey.SMS_VERIFY_CODE, verifyCode));
+        String mobile = stringRedisTemplate.opsForValue().get(redisKey);
         Assert.isTrue(!Objects.isNull(mobile), "verifyCode is expired or wrong");
         // 查找用户或自动注册
         User user = repository.findByMobile(mobile)
@@ -148,9 +149,13 @@ public class AuthenticationService {
                             .build();
                     return repository.save(newUser);
                 });
-
         // 生成 JWT 令牌
         String jwtToken = jwtService.generateToken(user);
+        // 删除redisKey
+        Boolean success = stringRedisTemplate.delete(redisKey);
+        if (Boolean.FALSE.equals(success)) {
+            log.error("delete key {} failed", redisKey);
+        }
         // 授权
         return AuthenticationResponse.builder()
                 .token(jwtToken)
