@@ -16,6 +16,11 @@ public class TestController {
 
     private final TestService testService;
 
+    @GetMapping("/hello")
+    public String hello() {
+        return "hello";
+    }
+
     /**
      * 钉钉机器人webhook实时报警
      */
