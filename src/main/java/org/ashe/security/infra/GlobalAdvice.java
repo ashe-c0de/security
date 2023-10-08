@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RequiredArgsConstructor
 public class GlobalAdvice {
 
-    private final EnvironmentUtils environmentUtils;
-
     /**
      * we only need catch ServiceException and wrap it to json for view
      * 为了方便使用断言来抛出业务异常，因此同时捕获了IllegalArgumentException (断言抛出的异常统一为IllegalArgumentException)
@@ -39,9 +37,7 @@ public class GlobalAdvice {
         log.error(e.getTitle(), e);
         // 通知运维
         // 通知开发
-        if (environmentUtils.isDev()) {
-            ExceptionAlarm.noticeDeveloper(e.getMessage(), e.getDeveloper(), e.getTitle());
-        }
+        ExceptionAlarm.noticeDeveloper(e.getMessage(), e.getDeveloper(), e.getTitle());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("系统异常，已通知开发人员");
     }
 
