@@ -75,4 +75,17 @@ class FunnyTest {
         });
     }
 
+    @Test
+    void recursion() {
+        Assertions.assertDoesNotThrow(() -> recursion(4));
+    }
+
+    public void recursion(int num){
+        if (num > 2) {
+            num--;
+            recursion(num);
+        }
+        log.info(String.valueOf(num));
+    }
+
 }

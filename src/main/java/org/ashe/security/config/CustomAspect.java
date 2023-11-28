@@ -7,6 +7,7 @@ import org.ashe.security.domain.Limit;
 import org.ashe.security.domain.RedisKey;
 import org.ashe.security.user.Role;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -87,6 +88,17 @@ public class CustomAspect {
             }
         }
         return increment < 6;
+    }
+
+    /**
+     * 通常情况下，全局异常处理器（如 @RestControllerAdvice）在异常发生时首先被触发。
+     * 切面中的异常处理逻辑会在全局异常处理器之后执行。
+     * 因为全局异常处理器可以拦截所有控制器中抛出的异常，而切面通常是特定切点上的处理逻辑。
+     */
+    @AfterThrowing(pointcut = "execution(* org.ashe.security.auth.TestService.aspectException())", throwing = "exception")
+    public void handleTestServiceException(Exception exception) {
+        // 在这里处理捕获到的异常
+        log.error("Exception caught in aspect: " + exception.getMessage());
     }
 
 }

@@ -3,11 +3,8 @@ FROM openjdk:17-jdk
 WORKDIR /app
 
 # 将当前目录下的jar复制到Docker容器中的指定目录下
-COPY ./*.jar /app/app.jar
+COPY ./*.jar /app/security.jar
 
-EXPOSE 8080
+# 容器启动时执行的命令
+CMD ["java", "-jar", "/app/security.jar"]
 
-CMD ["java", "-jar", "/app/app.jar"]
-
-# 指定test环境
-ENV SPRING_PROFILES_ACTIVE test
